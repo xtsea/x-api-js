@@ -1,0 +1,24 @@
+{
+  "name": "x-api-js",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Randy Dev",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.19.2",
+    "axios": "*",
+    "dotenv": "*",
+    "mongodb": "*",
+    "cheerio": "*",
+    "node-fetch": "*",
+    "sharp": "*",
+    "swagger-ui-express": "*",
+    "swagger-jsdoc": "*",
+    "@google/generative-ai": "*"
+  },
+  "type": "module"
+}
