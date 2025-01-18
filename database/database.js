@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import { MongoClient } from 'mongodb';
-import * as config from './config.js';
+import * as config from '../config.js';
 
 const client = new MongoClient(config.dbUri);
 
