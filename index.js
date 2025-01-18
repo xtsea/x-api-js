@@ -22,19 +22,31 @@ import express from 'express';
 const app = express();
 
 import * as swaggerUi from 'swagger-ui-express';
-import * as openapiSpecification from './swagger.js';
 import * as cheerio from 'cheerio';
-import * as lifestyle from './lifestyle.js';
+import * as lifestyle from './startup/lifestyle.js';
+
+import { Readable } from "stream";
+import { CheckMilWare } from './middleware/midware.js';
+import { setup, serve } from './swagger.js';
+import { swaggerOptions } from './settingOptions.js';
 
 import sharp from "sharp";
-import { Readable } from "stream";
+import cors from 'cors';
 import bodyParser from 'body-parser';
-import { GeminiResponse } from './googleGemini.js';
-import { CheckMilWare } from './midware.js';
+import swaggerJsDoc from 'swagger-jsdoc';
+
+// routes
+import { GeminiRoutes } from './routes/googleGemini.js';
 
 const CheckMilWares = new CheckMilWare();
 
-app.disable('x-powered-by');
+app.disable("x-powered-by");
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -42,28 +54,37 @@ app.use(
   })
 );
 
+// routes
+app.use(GeminiRoutes);
+
+const specs = swaggerJsDoc(swaggerOptions);
+
+app.use(
+  '/docs',
+  serve,
+  setup(specs, {
+    customCss: `
+      .swagger-ui .topbar { display: none; }
+      .swagger-ui .opblock .opblock-summary-path {
+        display: inline-block;
+        word-break: break-word;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+      }
+    `,
+    customCssUrl: "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.3.0/swagger-ui.min.css",
+    customSiteTitle: 'AkenoXJs'
+  })
+);
+
 app.get('/', (req, res) => {
   res.redirect('https://t.me/RendyProjects');
 });
 
-app.get('/api-docs.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(openapiSpecification);
-});
-
 app.use(async (req, res, next) => {
     await CheckMilWares.handle(req, res, next);
-});
-
-app.get("/api/v1/google-gemini", async (req, res) => {
-    try {
-        const query = req.query.query;
-        const setmodel = req.query.setmodel || "gemini-1.5-flash"
-        const results = await GeminiResponse(query, setmodel);
-        res.json({ message: results });
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
 });
 
 lifestyle.startServer(app);
