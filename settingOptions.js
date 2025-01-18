@@ -17,7 +17,7 @@ const swaggerOptions = {
     },
     servers: [
       { 
-        url: 'https://randydev-ryu-js.hf.space', 
+        url: '', 
         description: 'url' 
       }
     ],
