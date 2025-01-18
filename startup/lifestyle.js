@@ -1,4 +1,4 @@
-import { Database } from './database.js';
+import { Database } from '../database/database.js';
 const port = 7860
 
 const startup = async () => {
