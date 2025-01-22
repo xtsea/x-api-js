@@ -24,6 +24,7 @@ class CheckMilWare {
 
   async handle(req, res, next) {
     try {
+      delete req.headers["link"];
       const xForwardedFor = req.headers['x-forwarded-for'];
       const xRealIP = req.headers['x-real-ip'];
       const cfConnectingIP = req.headers['cf-connecting-ip'];
@@ -39,10 +40,8 @@ class CheckMilWare {
 
       req.realIP = realIP;
 
-      console.log(`Extracted Real IP: ${realIP}`);
-
       const isBlocked = await this.dbClient.CheckIsBlocked(realIP);
-      if (isBlocked && isBlocked.blocked === true) {
+      if (isBlocked && isBlocked.blocked) {
         return res.status(403).send("Access denied: IP is blocked");
       }
 
@@ -51,7 +50,10 @@ class CheckMilWare {
         await this.dbClient.AddIpisBlocked(realIP);
         return res.status(403).send("Access denied: IP is blocked..");
       }
-      console.log(`Real IP address is: ${realIP}, header used: ${xForwardedFor ? "x-forwarded-for" : xRealIP ? "x-real-ip" : cfConnectingIP ? "cf-connecting-ip" : "req.ip"}`);
+      console.log(`Real IP address is: ${realIP}
+      path method: ${req.path}
+      header used: ${xForwardedFor ? "x-forwarded-for" : xRealIP ? "x-real-ip" : cfConnectingIP ? "cf-connecting-ip" : "req.ip"}
+      `);
 
       next();
     } catch (error) {
