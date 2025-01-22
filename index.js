@@ -37,7 +37,6 @@ import swaggerJsDoc from 'swagger-jsdoc';
 
 // routes
 import { GempaRoutes } from './plugins/gempa.js';
-import { FluxRoutes } from './plugins/fluxai.js';
 import { GptRoutes } from './plugins/gptold.js';
 import { HentaiRoutes } from './plugins/hentai.js';
 import { TebakRoutes } from './plugins/tebak.js';
@@ -69,7 +68,6 @@ app.use(async (req, res, next) => {
 
 // routes
 app.use(GeminiRoutes);
-app.use(FluxRoutes);
 app.use(GptRoutes);
 app.use(HentaiRoutes);
 app.use(TebakRoutes);
