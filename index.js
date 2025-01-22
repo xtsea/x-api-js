@@ -36,11 +36,20 @@ import bodyParser from 'body-parser';
 import swaggerJsDoc from 'swagger-jsdoc';
 
 // routes
+import { GempaRoutes } from './plugins/gempa.js';
+import { FluxRoutes } from './plugins/fluxai.js';
+import { GptRoutes } from './plugins/gptold.js';
+import { HentaiRoutes } from './plugins/hentai.js';
+import { TebakRoutes } from './plugins/tebak.js';
+import { CopilotRoutes } from './plugins/copilot.js';
+import { CarbonRoutes } from './plugins/carbon.js';
+import { UnblockIpRoutes } from './plugins/unblockip.js';
 import { GeminiRoutes } from './routes/googleGemini.js';
 
 const CheckMilWares = new CheckMilWare();
 
 app.disable("x-powered-by");
+app.disable("link")
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST'],
@@ -54,8 +63,20 @@ app.use(
   })
 );
 
+app.use(async (req, res, next) => {
+    await CheckMilWares.handle(req, res, next);
+});
+
 // routes
 app.use(GeminiRoutes);
+app.use(FluxRoutes);
+app.use(GptRoutes);
+app.use(HentaiRoutes);
+app.use(TebakRoutes);
+app.use(GempaRoutes);
+app.use(CopilotRoutes);
+app.use(UnblockIpRoutes);
+app.use(CarbonRoutes);
 
 const specs = swaggerJsDoc(swaggerOptions);
 
@@ -81,10 +102,6 @@ app.use(
 
 app.get('/', (req, res) => {
   res.redirect('https://t.me/RendyProjects');
-});
-
-app.use(async (req, res, next) => {
-    await CheckMilWares.handle(req, res, next);
 });
 
 lifestyle.startServer(app);
