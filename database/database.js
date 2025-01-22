@@ -73,6 +73,24 @@ class Database {
         }
     }
 
+    async UnblockedIp(ip) {
+        try {
+            const collection = this.collection();
+            const filter = { ip: ip };
+            const update = { $set: { blocked: false } };
+
+            const result = await collection.updateOne(filter, update, { upsert: true });
+
+            if (result.upsertedCount > 0) {
+                console.log("IP address unblocked:", ip);
+            } else {
+                console.log("Updated an existing IP address:", ip);
+            }
+        } catch (error) {
+            console.error("Error updating IP address:", error.message);
+        }
+    }
+
     async AddIpisBlocked(ip) {
         try {
             const collection = this.collection();
@@ -82,7 +100,7 @@ class Database {
             const result = await collection.updateOne(filter, update, { upsert: true });
 
             if (result.upsertedCount > 0) {
-                console.log("Inserted a new IP address:", ip);
+                console.log("Inserted IP address blocked:", ip);
             } else {
                 console.log("Updated an existing IP address:", ip);
             }
@@ -98,9 +116,7 @@ class Database {
             const update = { $set: { blocked: true } };
 
             const FindIp = await collection.findOne(filter);
-
             if (FindIp) {
-                console.log("IP found in the database:", FindIp);
                 return FindIp;
             } else {
                 console.log("IP not found in the database");
