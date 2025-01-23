@@ -1,8 +1,13 @@
 import { Database } from '../database/database.js';
+import { InitBot } from '../bot/telegrambot.js';
+import { IsTelegramBot } from '../config.js';
 const port = 7860
 
 const startup = async () => {
     try {
+        if (IsTelegramBot) {
+          await InitBot();
+        }
         const dbClient = new Database("AkenoXJs", "FastJsAPI");
         console.log("Starting application...");
         await dbClient.connect();
