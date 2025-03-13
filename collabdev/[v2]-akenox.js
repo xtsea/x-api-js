@@ -1,4 +1,4 @@
-// AkenoX API
+// AkenoX API (javascript)
 
 import axios from 'axios';
 
